@@ -1,0 +1,15 @@
+{
+    "name": "unite/captcha",
+    "description": "Custom friendlycaptcha alternative",
+    "license": "TBD",
+    "type": "module",
+    "require": {
+        "php": ">=8"
+    },
+    "autoload": {
+        "psr-4": { "Unite\\Captcha\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    }
+}
