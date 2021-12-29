@@ -1,0 +1,10 @@
+{
+  "name": "@unite/captcha",
+  "description": "Custom friendlycaptcha alternative",
+  "license": "TBD",
+  "main": "Resources/assets/js/captcha.js",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-forge": "^0.10.0"
+  }
+}
