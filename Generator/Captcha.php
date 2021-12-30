@@ -36,7 +36,7 @@ class Captcha
 
         $tPuzzle = $tPuzzle . base_convert($tMaskedLastCharOfPuzzle, 10, 16);
         $targetHash = $this->hash($tPuzzleHash);
-        return new Puzzle($timestamp, $tPuzzle, $this->strength, $targetHash);
+        return new Puzzle($timestamp, $tPuzzle, $this->strength, $targetHash, $this->TTL);
     }
 
     /**

@@ -1,12 +1,15 @@
+
 /**
  * Registers a service worker and let it solve a captcha puzzle
  */
 export default class Captcha {
 
-    constructor(serviceWorkerPath = 'captchaServiceWorker.js', fetchUrl = '/captcha-get', checkUrl = '/captcha-check') {
-        this.fetchUrl = fetchUrl;
-        this.checkUrl = checkUrl;
+    constructor(serviceWorkerPath = 'captchaServiceWorker.js') {
         this.registerServiceWorker(serviceWorkerPath);
+    }
+
+    async fetchPuzzle() {
+        throw 'Needs to be implemented!';
     }
 
     registerServiceWorker(serviceWorkerPath) {
@@ -47,6 +50,7 @@ export default class Captcha {
         const solution = await this.internalRun();
         return {
             ...solution,
+            puzzle: this.puzzle,
             attempts: this.attemptCount,
             duration: performance.now() - this.solveStartTime,
         };
@@ -54,25 +58,15 @@ export default class Captcha {
 
     async internalRun() {
         this.attemptCount++;
-        const { timestamp, targetHash, puzzle, puzzleStrength } = await this.fetchPuzzle();
+        this.puzzle = await this.fetchPuzzle();
         try {
-            return await this.solve(timestamp, targetHash, puzzle, puzzleStrength);
+            return await this.solve();
         } catch (error) {
             return this.internalRun();
         }
     }
 
-    async fetchPuzzle() {
-        const response = await fetch(this.fetchUrl);
-        return await response.json();
-    }
-
-    async checkPuzzle() {
-        const response = await fetch(this.checkUrl);
-        return await response.json();
-    }
-
-    async solve(timestamp, targetHash, puzzle, puzzleStrength) {
+    async solve() {
         if(!this.serviceWorker) {
             throw 'ServiceWorker not initialized!';
         }
@@ -82,7 +76,7 @@ export default class Captcha {
             this.solveReject = reject;
             this.serviceWorker.postMessage({
                 cmd: 'start',
-                args: { timestamp, targetHash, puzzle, puzzleStrength },
+                args: this.puzzle,
             });
         });
     }

@@ -42,7 +42,7 @@ class CaptchaTest extends TestCase
         $captcha = new Captcha('SECRET', 17,20);
         $puzzle = $captcha->createPuzzle();
         $this->expectException(PuzzleTTLException::class);
-        $captcha->checkPuzzle(new Puzzle(time() - 21, $puzzle->getPuzzle(), $puzzle->getPuzzleStrength(), $puzzle->getTargetHash()), 'XXX');
+        $captcha->checkPuzzle(new Puzzle(time() - 21, $puzzle->getPuzzle(), $puzzle->getPuzzleStrength(), $puzzle->getTargetHash(), 20), 'XXX');
     }
 
     /**
@@ -53,7 +53,7 @@ class CaptchaTest extends TestCase
         $captcha = new Captcha('SECRET');
         $puzzle = $captcha->createPuzzle();
         $this->expectException(InvalidPuzzleTargetHashException::class);
-        $captcha->checkPuzzle(new Puzzle(time(), $puzzle->getPuzzle(), 17, 'BAA'), 'XXX');
+        $captcha->checkPuzzle(new Puzzle(time(), $puzzle->getPuzzle(), 17, 'BAA', 60), 'XXX');
     }
 
     /**
@@ -73,6 +73,7 @@ class CaptchaTest extends TestCase
             'puzzle' => 'PUZZLE',
             'puzzleStrength' => 1234,
             'targetHash' => 'HASH',
+            'TTL' => 123,
         ];
         $puzzle = Puzzle::fromData($data);
         $this->assertEquals($data, $puzzle->jsonSerialize());

@@ -53,7 +53,7 @@ export default class PuzzleSolver {
             const iHash = this.hash(iCandidate);
 
             if (iHash === pTargetHash) {
-                this.postMessage('solution', { solution: iHash });
+                this.postMessage('solution', { solution: iCandidate });
                 return;
             }
         }
