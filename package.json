@@ -5,6 +5,7 @@
   "main": "Resources/assets/js/captcha.js",
   "version": "1.0.0",
   "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
     "node-forge": "^0.10.0"
   }
 }

@@ -2,13 +2,28 @@ import forge from 'node-forge';
 
 export default class PuzzleSolver {
 
-    constructor(serviceWorkerInstance) {
-        this.serviceWorkerInstance = serviceWorkerInstance;
-        this.hash = forge.md.sha512.sha256.create();
+    constructor(messageBus = null) {
+        this.messageBus = messageBus || { postMessage() {} };
+    }
+
+    hash(str) {
+
+        let hasWideChar = false;
+
+        for(let i = 0; i < str.length; i++ ){
+            if ( str.charCodeAt(i) >>> 8 ) {
+                hasWideChar = true;
+                break;
+            }
+        }
+
+        const md = forge.md.sha256.create();
+        md.update(str, hasWideChar ? 'utf8' : undefined);
+        return md.digest().toHex();
     }
 
     postMessage(cmd, args = {}) {
-        this.serviceWorkerInstance.postMessage({ cmd, args });
+        this.messageBus.postMessage({ cmd, args });
     }
 
     async solve(pTimestamp, pTargetHash, pPuzzle, pPuzzleStrength) {
@@ -35,8 +50,7 @@ export default class PuzzleSolver {
             const iBitsToAppend = (iZeros + iMask.toString(16)).slice(-iBitsMissing);
             const iBitsMiddle = (iPartialBits + (i >> (iBitsMissing<<2))).toString(16);
             const iCandidate = iLeftPuzzleSolution + iBitsMiddle + iBitsToAppend;
-
-            const iHash = this.hash.update(iCandidate).digest().toHex();
+            const iHash = this.hash(iCandidate);
 
             if (iHash === pTargetHash) {
                 this.postMessage('solution', { solution: iHash });

@@ -4,7 +4,6 @@ namespace Unite\Captcha\Generator;
 
 use Unite\Captcha\Exception\InvalidPuzzleTargetHashException;
 use Unite\Captcha\Exception\PuzzleTTLException;
-use Unite\Captcha\Exception\TTLException;
 
 class Captcha
 {
@@ -37,7 +36,7 @@ class Captcha
 
         $tPuzzle = $tPuzzle . base_convert($tMaskedLastCharOfPuzzle, 10, 16);
         $targetHash = $this->hash($tPuzzleHash);
-        return new Puzzle($timestamp, $tPuzzle, $targetHash);
+        return new Puzzle($timestamp, $tPuzzle, $this->strength, $targetHash);
     }
 
     /**

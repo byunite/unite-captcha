@@ -9,14 +9,12 @@ self.addEventListener('message', function(e) {
     switch (data.cmd) {
         case 'start':
             const {
-                timeStamp,
+                timestamp,
                 targetHash,
                 puzzle,
                 puzzleStrength,
             } = data.args;
-            puzzleSolver.solve(timeStamp, targetHash, puzzle, puzzleStrength).finally(() => {
-                self.close();
-            });
+            puzzleSolver.solve(timestamp, targetHash, puzzle, puzzleStrength);
             break;
     }
 }, false);

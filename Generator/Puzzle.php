@@ -8,12 +8,14 @@ class Puzzle implements JsonSerializable
 {
     protected int $timestamp;
     protected string $puzzle;
+    protected int $puzzleStrength;
     protected string $targetHash;
 
-    public function __construct(int $timestamp, string $puzzle, string $targetHash)
+    public function __construct(int $timestamp, string $puzzle, int $puzzleStrength, string $targetHash)
     {
         $this->timestamp = $timestamp;
         $this->puzzle = $puzzle;
+        $this->puzzleStrength = $puzzleStrength;
         $this->targetHash = $targetHash;
     }
 
@@ -21,6 +23,7 @@ class Puzzle implements JsonSerializable
         return new Puzzle(
             $data['timestamp'],
             $data['puzzle'],
+            $data['puzzleStrength'],
             $data['targetHash'],
         );
     }
@@ -42,6 +45,14 @@ class Puzzle implements JsonSerializable
     }
 
     /**
+     * @return int
+     */
+    public function getPuzzleStrength(): int
+    {
+        return $this->puzzleStrength;
+    }
+
+    /**
      * @return string
      */
     public function getTargetHash(): string
@@ -54,6 +65,7 @@ class Puzzle implements JsonSerializable
         return [
             'timestamp' => $this->getTimestamp(),
             'puzzle' => $this->getPuzzle(),
+            'puzzleStrength' => $this->getPuzzleStrength(),
             'targetHash' => $this->getTargetHash(),
         ];
     }
