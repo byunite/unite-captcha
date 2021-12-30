@@ -1,8 +1,8 @@
 {
   "name": "@unite/captcha",
-  "description": "Custom friendlycaptcha alternative",
+  "description": "Custom crypto-puzzle-captcha implementation",
   "license": "TBD",
-  "main": "Resources/assets/js/captcha.js",
+  "main": "Resources/assets/js/index.js",
   "version": "1.0.0",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0",

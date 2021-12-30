@@ -1,6 +1,6 @@
 {
     "name": "unite/captcha",
-    "description": "Custom friendlycaptcha alternative",
+    "description": "Custom crypto-puzzle-captcha implementation",
     "license": "TBD",
     "type": "module",
     "require": {
