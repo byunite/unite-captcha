@@ -30,7 +30,7 @@ class Captcha
         $tPuzzleHash = $this->hash($timestamp . $this->secret);
         $tIndexLastByte = strlen($tPuzzleHash) - floor($this->strength / 4) - 1;
         $tPuzzle = substr($tPuzzleHash, 0, $tIndexLastByte);
-        $tLastCharOfPuzzle = intval('0x' . substr($tPuzzleHash, $tIndexLastByte, 1));
+        $tLastCharOfPuzzle = hexdec(substr($tPuzzleHash, $tIndexLastByte, 1));
         $tBitsToMask = $this->strength % 4;
         $tMaskedLastCharOfPuzzle = $tLastCharOfPuzzle & ~((1 << $tBitsToMask) - 1);
 
