@@ -41,12 +41,18 @@ So secure the form you need to add a special captcha input element ("data-captch
 <form>
     ...
     <input type="hidden" name="_captcha" data-captcha="{&quot;serviceWorkerUrl&quot;:&quot;\/dist\/captchaServiceWorker.js&quot;,&quot;fetchUrl&quot;:&quot;\/captcha-get-puzzle&quot;}" />
-    <p data-captcha-progress>
-        Solving captcha... (<span data-captcha-progress-text></span>)
-    </p>
-    <p data-captcha-solved>
-        ✅ Captcha solved.
-    </p>
+    <div class="unite-captcha">
+            <span data-captcha-placeholder>
+                🔒 Automatisches Captcha
+            </span>
+        <span data-captcha-progress>
+                ⌛️️ Captcha wird gelöst... <small>(<span data-captcha-progress-text></span>)</small>
+            </span>
+        <span data-captcha-solved>
+                ✅ Captcha bestanden
+            </span>
+        <span data-captcha-progress-bar></span>
+    </div>
     ...
 </form>
 ```
@@ -103,10 +109,12 @@ sure, that the `dist/captchaServiceWorker.js` script is accessible via HTTP (in 
 service worker path):
 ````html
 <script src="/dist/captcha.js"></script>
+<link rel="stylesheet" href="/dist/captcha.css" />
 ````
 
-### 2.2 Option B: Import the ES6 modules into your custom js logic (vue, react whatever) 
+### 2.1 Option B: Import the ES6 modules into your custom js logic (vue, react whatever) 
 ````js
+import '@unite/captcha/dist/captcha.css'
 import { FetchCaptcha, Captcha } from "@unite/captcha";
 
 
@@ -130,3 +138,18 @@ const solution = await captcha.run(({ progress }) => {
 });
 
 ````
+
+### 2.2 Custom styling and markup
+You can customize the captcha widget by overriding on of the following css variables: 
+```css
+.unite-captcha {
+    --captcha-widget-background: rgba(0,0,0,0.025);
+    --captcha-widget-border: rgba(0,0,0,0.25);
+    --captcha-progress-bar: rgba(0,0,0,0.5);
+    --captcha-progress-bar-done: #00C30D;
+}
+```
+or by providing custom styling instead of including the captcha.css file.
+
+You can also customize the markup in every way: The default captcha module will look for elements with the specific data 
+attributes and will update classes and css variables.

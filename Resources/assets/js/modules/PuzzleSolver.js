@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+import { Sha256 } from '@aws-crypto/sha256-browser'
 
 export default class PuzzleSolver {
 
@@ -6,7 +6,7 @@ export default class PuzzleSolver {
         this.messageBus = messageBus || { postMessage() {} };
     }
 
-    hash(str) {
+    async hash(str) {
 
         let hasWideChar = false;
 
@@ -17,9 +17,9 @@ export default class PuzzleSolver {
             }
         }
 
-        const md = forge.md.sha256.create();
-        md.update(str, hasWideChar ? 'utf8' : undefined);
-        return md.digest().toHex();
+        const hash = new Sha256();
+        hash.update(str);
+        return Array.prototype.map.call((await hash.digest()), x => ('00' + x.toString(16)).slice(-2)).join('');
     }
 
     postMessage(cmd, args = {}) {
@@ -50,7 +50,7 @@ export default class PuzzleSolver {
             const iBitsToAppend = (iZeros + iMask.toString(16)).slice(-iBitsMissing);
             const iBitsMiddle = (iPartialBits + (i >> (iBitsMissing<<2))).toString(16);
             const iCandidate = iLeftPuzzleSolution + iBitsMiddle + iBitsToAppend;
-            const iHash = this.hash(iCandidate);
+            const iHash = await this.hash(iCandidate);
 
             if (iHash === pTargetHash) {
                 this.postMessage('solution', { solution: iCandidate });

@@ -4,7 +4,7 @@ function findForm(el) {
     return el.tagName === 'FORM' ? el : (el.parentElement ? findForm(el.parentElement) : null);
 }
 
-function runCaptcha(captcha, form, captchaProgress, captchaSolved, captchaProgressText, submitButton, input) {
+function runCaptcha(captcha, form, captchaPlaceholder, captchaProgress, captchaSolved, captchaProgressText, captchaProgressBar, submitButton, input) {
 
     input.value = '';
 
@@ -12,17 +12,27 @@ function runCaptcha(captcha, form, captchaProgress, captchaSolved, captchaProgre
         submitButton.disabled = true;
     }
 
+    if(captchaPlaceholder) {
+        captchaPlaceholder.classList.remove('visible');
+    }
+
     if (captchaProgress) {
-        captchaProgress.style.display = 'block';
+        captchaProgress.classList.add('visible');
     }
 
     if (captchaSolved) {
-        captchaSolved.style.display = 'none';
+        captchaSolved.classList.remove('visible');
+    }
+
+    if (captchaProgressBar) {
+        captchaProgressBar.classList.remove('done');
+        captchaProgressBar.classList.add('progress');
+        captchaProgressBar.parentElement.style.setProperty('--captcha-progress', `${0}%`);
     }
 
     captcha.run(({progress}) => {
-        if (captchaProgress) {
-            captchaProgress.dispatchEvent(new CustomEvent('captchaProgress', {detail: {progress}}));
+        if(captchaProgressBar) {
+            captchaProgressBar.parentElement.style.setProperty('--captcha-progress', `${progress}%`);
         }
         if (captchaProgressText) {
             captchaProgressText.innerText = `${progress}%`;
@@ -33,17 +43,27 @@ function runCaptcha(captcha, form, captchaProgress, captchaSolved, captchaProgre
             submitButton.disabled = false;
         }
         if (captchaProgress) {
-            captchaProgress.style.display = 'none';
+            captchaProgress.classList.remove('visible');
+        }
+
+        if(captchaProgressBar) {
+            captchaProgressBar.parentElement.style.setProperty('--captcha-progress', '100%');
+            captchaProgressBar.classList.remove('progress');
+            captchaProgressBar.classList.add('done');
+        }
+
+        if (captchaProgressText) {
+            captchaProgressText.innerText = '100%';
         }
         if (captchaSolved) {
-            captchaSolved.style.display = 'block';
+            captchaSolved.classList.add('visible');
         }
 
         // Set timeout for one second before TTL expires.
         const expiredTime = solution.puzzle.timestamp + solution.puzzle.TTL;
         const remainingTime = expiredTime - Math.round(Date.now() / 1000) - 1;
         setTimeout(() => {
-            runCaptcha(captcha, form, captchaProgress, captchaSolved, captchaProgressText, submitButton, input);
+            runCaptcha(captcha, form, captchaPlaceholder, captchaProgress, captchaSolved, captchaProgressText, captchaProgressBar, submitButton, input);
         }, remainingTime * 1000);
     });
 }
@@ -53,29 +73,29 @@ export default function(root = document) {
         const form = findForm(input);
         if(form) {
             input.value = '';
+
             const submitButton = form.querySelector('button[type="submit"]');
+            const captchaPlaceholder = form.querySelector('[data-captcha-placeholder]');
+            const captchaProgress = form.querySelector('[data-captcha-progress]');
+            const captchaSolved = form.querySelector('[data-captcha-solved]');
+            const captchaProgressText = form.querySelector('[data-captcha-progress-text]');
+            const captchaProgressBar = form.querySelector('[data-captcha-progress-bar]');
+            const config = JSON.parse(input.dataset.captcha);
+            const captcha = new FetchCaptcha(config.serviceWorkerUrl, config.fetchUrl);
+
             if(submitButton) {
                 submitButton.disabled = true;
             }
-            const captchaProgress = form.querySelector('[data-captcha-progress]');
-            if (captchaProgress) {
-                captchaProgress.style.display = 'none';
-            }
 
-            const captchaSolved = form.querySelector('[data-captcha-solved]');
-            if (captchaSolved) {
-                captchaSolved.style.display = 'none';
+            if(captchaPlaceholder) {
+                captchaPlaceholder.classList.add('visible');
             }
-
-            const captchaProgressText = form.querySelector('[data-captcha-progress-text]');
-            const config = JSON.parse(input.dataset.captcha);
-            const captcha = new FetchCaptcha(config.serviceWorkerUrl, config.fetchUrl);
 
             form.querySelectorAll('*').forEach((el) => {
                 el.addEventListener('focus', () => {
                     if (!form.captchaStarted) {
                         form.captchaStarted = true;
-                        runCaptcha(captcha, form, captchaProgress, captchaSolved, captchaProgressText, submitButton, input);
+                        runCaptcha(captcha, form, captchaPlaceholder, captchaProgress, captchaSolved, captchaProgressText, captchaProgressBar, submitButton, input);
                     }
                 });
             });

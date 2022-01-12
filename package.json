@@ -6,6 +6,6 @@
   "version": "1.0.0",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0",
-    "node-forge": "^0.10.0"
+    "@aws-crypto/sha256-browser": "^2.0.1"
   }
 }
