@@ -1,3 +1,4 @@
+import FallbackServiceWorker from './FallbackServiceWorker';
 
 /**
  * Registers a service worker and let it solve a captcha puzzle
@@ -18,9 +19,14 @@ export default class Captcha {
             return;
         }
 
-        this.serviceWorker = new Worker(serviceWorkerPath)
+        try {
+            this.serviceWorker = new Worker(serviceWorkerPath)
+        } catch(e) {
+            this.serviceWorker = new FallbackServiceWorker();
+        }
+
         this.serviceWorker.addEventListener('message', (e) => {
-            const { data } = e;
+            const {data} = e;
             switch (data.cmd) {
                 case 'solution':
                     this.solveResolve(data.args);
@@ -29,7 +35,7 @@ export default class Captcha {
                     this.solveReject(data.args);
                     break;
                 case 'progress':
-                    if(this.onProgressCallback) {
+                    if (this.onProgressCallback) {
                         this.onProgressCallback({
                             ...data.args,
                             duration: performance.now() - this.solveStartTime
@@ -37,7 +43,6 @@ export default class Captcha {
                     }
                     break;
                 default:
-                    console.log(data);
                     break;
             }
         });

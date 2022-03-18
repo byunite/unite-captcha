@@ -2,8 +2,9 @@ import { Sha256 } from '@aws-crypto/sha256-browser'
 
 export default class PuzzleSolver {
 
-    constructor(messageBus = null) {
+    constructor(messageBus = null, wait = false) {
         this.messageBus = messageBus || { postMessage() {} };
+        this.wait = wait;
     }
 
     async hash(str) {
@@ -51,6 +52,14 @@ export default class PuzzleSolver {
             const iBitsMiddle = (iPartialBits + (i >> (iBitsMissing<<2))).toString(16);
             const iCandidate = iLeftPuzzleSolution + iBitsMiddle + iBitsToAppend;
             const iHash = await this.hash(iCandidate);
+
+            if(this.wait && i % 500 === 0) {
+                await new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve();
+                    }, 1);
+                });
+            }
 
             if (iHash === pTargetHash) {
                 this.postMessage('solution', { solution: iCandidate });

@@ -1,0 +1,17 @@
+{
+  "entrypoints": {
+    "captcha": {
+      "css": [
+        "/captcha.css"
+      ],
+      "js": [
+        "/captcha.js"
+      ]
+    },
+    "captchaServiceWorker": {
+      "js": [
+        "/captchaServiceWorker.js"
+      ]
+    }
+  }
+}

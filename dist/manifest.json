@@ -1,0 +1,5 @@
+{
+  "captcha.css": "/captcha.css",
+  "captcha.js": "/captcha.js",
+  "captchaServiceWorker.js": "/captchaServiceWorker.js"
+}
