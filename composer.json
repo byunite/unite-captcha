@@ -1,7 +1,7 @@
 {
     "name": "unite/captcha",
     "description": "Custom crypto-puzzle-captcha implementation",
-    "license": "TBD",
+    "license": "MIT",
     "type": "module",
     "version": "0.2.0",
     "require": {

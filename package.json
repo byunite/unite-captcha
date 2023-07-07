@@ -1,7 +1,7 @@
 {
   "name": "@unite/captcha",
   "description": "Custom crypto-puzzle-captcha implementation",
-  "license": "TBD",
+  "license": "MIT",
   "main": "Resources/assets/js/index.js",
   "version": "1.0.0",
   "dependencies": {
