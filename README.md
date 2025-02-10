@@ -17,6 +17,7 @@ Custom crypto-puzzle-captcha implementation (JS / PHP)
     ],
     ...
 }
+```
 
 
 ```shell
