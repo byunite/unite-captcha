@@ -5,6 +5,20 @@ Custom crypto-puzzle-captcha implementation (JS / PHP)
 (by Sascha Fruehwirth and Franz Wilding)
 
 ## Installation (composer)
+
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/unite-cms/crypto-captcha"
+        }
+    ],
+    ...
+}
+
+
 ```shell
 composer require unite/captcha
 yarn add link:./vendor/unite/captcha 
